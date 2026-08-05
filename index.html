@@ -840,13 +840,28 @@ function scorriGal(d){
   gi = (gi + d + galleria.length) % galleria.length;
   mostraFoto();
 }
+/* misure in pixel: niente rapporti di forma che possono collassare a zero */
+let formaCorr = [16,9];
+function misura(fw,fh){
+  formaCorr = [fw,fh];
+  const f = $("#m-frame");
+  const bordo = Math.min(54, innerWidth*.04) * 2;
+  const maxL = Math.min(1180, innerWidth - bordo);
+  const maxA = innerHeight * .74;
+  let l = maxL, a = l * fh / fw;
+  if(a > maxA){ a = maxA; l = a * fw / fh; }
+  f.style.aspectRatio = "auto";
+  f.style.width  = Math.round(l) + "px";
+  f.style.height = Math.round(a) + "px";
+}
+addEventListener("resize", () => { if(modal.classList.contains("open")) misura(...formaCorr); });
+
 function apri(l){
   $("#m-artist").textContent = l.artista;
   $("#m-meta").textContent = `${l.titolo} — ${l.ruolo} — ${anno(l)}`;
   const f = $("#m-frame");
   const [fw, fh] = (l.fmt || "16:9").split(":").map(Number);
-  f.style.aspectRatio = `${fw}/${fh}`;
-  f.style.width = `min(100%, ${(74 * fw / fh).toFixed(1)}vh)`;
+  misura(fw, fh);
   galleria = [];
   if(l.foto && l.foto.length > 1){
     galleria = l.foto; gi = 0;
