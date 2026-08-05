@@ -290,9 +290,9 @@ footer a:hover{color:var(--red-hi)}
 .modal{position:fixed;inset:0;z-index:60;background:rgba(5,4,6,.96);backdrop-filter:blur(12px);
   display:none;align-items:center;justify-content:center;padding:clamp(16px,4vw,54px)}
 .modal.open{display:flex}
-.modal-in{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:100%}
-.frame{background:#000;border:1px solid var(--line);width:auto;max-width:100%;
-  max-height:76vh;aspect-ratio:16/9;position:relative}
+.modal-in{display:flex;flex-direction:column;align-items:center;gap:14px;width:min(1180px,100%)}
+.frame{background:#000;border:1px solid var(--line);width:100%;max-width:100%;
+  aspect-ratio:16/9;position:relative}
 .gnav{position:absolute;top:0;bottom:0;width:24%;z-index:2;color:#fff;font-size:34px;line-height:1;
   opacity:0;transition:opacity .25s;text-shadow:0 2px 14px rgba(0,0,0,.6)}
 .gnav.pre{left:0;text-align:left;padding-left:16px}
@@ -844,7 +844,9 @@ function apri(l){
   $("#m-artist").textContent = l.artista;
   $("#m-meta").textContent = `${l.titolo} — ${l.ruolo} — ${anno(l)}`;
   const f = $("#m-frame");
-  f.style.aspectRatio = forma(l);
+  const [fw, fh] = (l.fmt || "16:9").split(":").map(Number);
+  f.style.aspectRatio = `${fw}/${fh}`;
+  f.style.width = `min(100%, ${(74 * fw / fh).toFixed(1)}vh)`;
   galleria = [];
   if(l.foto && l.foto.length > 1){
     galleria = l.foto; gi = 0;
