@@ -77,7 +77,22 @@ nav.stuck{background:rgba(8,7,10,.78);backdrop-filter:blur(16px);border-bottom-c
 .navlinks a{color:var(--muted);transition:color .2s}
 .navlinks a:hover{color:var(--text)}
 .navlinks a.hi{color:var(--red-hi)}
-@media(max-width:760px){.navlinks a:not(.hi){display:none}}
+.burger{display:none;width:36px;height:36px;position:relative;color:var(--muted);z-index:32}
+.burger i{position:absolute;left:7px;right:7px;height:1.5px;background:currentColor;
+  transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .2s}
+.burger i:nth-child(1){top:14px}
+.burger i:nth-child(2){top:21px}
+nav.su-rosso .burger{color:#fff}
+body.menu-on .burger{color:var(--text)}
+body.menu-on .burger i:nth-child(1){transform:translateY(3.5px) rotate(45deg)}
+body.menu-on .burger i:nth-child(2){transform:translateY(-3.5px) rotate(-45deg)}
+#menuM{position:fixed;inset:0;z-index:29;background:var(--ink);display:flex;flex-direction:column;
+  justify-content:center;padding:0 var(--pad);opacity:0;pointer-events:none;transition:opacity .35s}
+body.menu-on #menuM{opacity:1;pointer-events:auto}
+#menuM a{font-size:clamp(32px,10vw,54px);font-weight:400;text-transform:uppercase;letter-spacing:-.03em;
+  padding:16px 0;border-bottom:1px solid var(--line)}
+#menuM a:last-child{border-bottom:none;color:var(--red-hi)}
+@media(max-width:760px){.navlinks{display:none}.burger{display:block}}
 
 /* HERO */
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;
@@ -220,6 +235,12 @@ nav.stuck{background:rgba(8,7,10,.78);backdrop-filter:blur(16px);border-bottom-c
   transform:translateY(14px);opacity:0;transition:opacity .5s .1s,transform .5s .1s,color .5s}
 .wd-t:hover p{opacity:1;transform:none;color:#F6E9EB}
 @media(hover:none){.wd-t p{opacity:1;transform:none}.wd-t::before{display:none}}
+@media(max-width:760px){
+  .wd-t{min-height:0;padding:24px 22px 28px}
+  .wd-t .k{position:static;display:block;margin-bottom:12px}
+  .wd-t h3 br{display:none}
+  .wd-t p{margin-top:10px;max-width:none}
+}
 
 /* CONTATTI */
 .contact{background:var(--paper);color:#0B0A0D;padding:clamp(60px,10vh,124px) var(--pad)}
@@ -304,7 +325,7 @@ footer a:hover{color:var(--red-hi)}
 .ap-cue.on{opacity:1}
 
 /* ---------- il titolo si scrive, si seleziona, si incolla ---------- */
-.ic{font-size:min(9vw,112px);font-weight:400;letter-spacing:-.035em;line-height:1.12}
+.ic{font-size:clamp(23px,8.2vw,112px);font-weight:400;letter-spacing:-.035em;line-height:1.12}
 .ic{position:relative;display:inline-block;white-space:nowrap;padding:0 .03em}
 .ic .hl{position:absolute;left:0;right:0;top:.1em;bottom:.14em;background:rgba(255,255,255,.22);
   transform:scaleX(0);transform-origin:left center;transition:transform .5s cubic-bezier(.16,1,.3,1)}
@@ -363,7 +384,14 @@ footer a:hover{color:var(--red-hi)}
     <a href="#cosa">What we do</a>
     <a class="hi" href="#contatti">Contatti</a>
   </div>
+  <button class="burger" id="burger" aria-label="Menu"><i></i><i></i></button>
 </nav>
+<div id="menuM">
+  <a href="#lavori">Lavori</a>
+  <a href="#archivio">Archivio</a>
+  <a href="#cosa">What we do</a>
+  <a href="#contatti">Contatti</a>
+</div>
 
 <main>
 <section id="apertura">
@@ -376,7 +404,7 @@ footer a:hover{color:var(--red-hi)}
 <section class="sec" id="lavori" style="padding-top:clamp(96px,15vh,180px)">
   <div class="sec-head">
     <h2 class="mask"><span>In evidenza</span></h2>
-    <a class="lbl fade" href="#archivio">Tutto l'archivio &#8595;</a>
+    <a class="lbl fade" href="#archivio">Tutto l'archivio &#8595;&#xFE0E;</a>
   </div>
   <div class="evid" id="evid"></div>
   <p class="evid-note" id="evidNote"></p>
@@ -465,7 +493,7 @@ footer a:hover{color:var(--red-hi)}
 
 <footer>
   <span>&copy; <span id="yr"></span> Morelife Studio — P.IVA 00000000000</span>
-  <span><a href="#top">Torna su &#8593;</a></span>
+  <span><a href="#top">Torna su &#8593;&#xFE0E;</a></span>
 </footer>
 
 <a class="wa-float" id="waFloat" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
@@ -577,7 +605,7 @@ function ambiente(){
 }
 function costruisci(){
   ren = new THREE.WebGLRenderer({antialias:true, alpha:true, powerPreference:"high-performance"});
-  ren.setPixelRatio(Math.min(devicePixelRatio,2));
+  ren.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 760 ? 1.5 : 2));
   ren.setSize(innerWidth, innerHeight);
   ren.outputEncoding = THREE.sRGBEncoding;
   $("#bg").appendChild(ren.domElement);
@@ -707,9 +735,9 @@ function avvia(){
   const anni = ["Tutti", ...[...new Set(LAVORI.map(anno))].sort((x,y) => y-x)];
   let attivo = "Tutti", annoSel = "Tutti", cerca = "", mostrati = BLOCCO;
 
-  const chip = (v,s) => `<button data-v="${v}" aria-pressed="${String(v)===String(s)}">${v}</button>`;
+  const chip = (v,s,testo) => `<button data-v="${v}" aria-pressed="${String(v)===String(s)}">${testo||v}</button>`;
   $("#filters").innerHTML = tipi.map(t => chip(t, attivo)).join("");
-  $("#anni").innerHTML = anni.map(a => chip(a, annoSel)).join("");
+  $("#anni").innerHTML = anni.map(a => chip(a, annoSel, a === "Tutti" ? "Tutti gli anni" : a)).join("");
   const segna = (sel,v) => [...$(sel).children].forEach(x =>
     x.setAttribute("aria-pressed", x.dataset.v === String(v)));
 
@@ -755,7 +783,7 @@ function avvia(){
         <span class="r-title">${l.titolo}</span>
         <span class="r-thumb">${mini(l,n)}</span>
         <span class="r-tag">${l.tipo}</span>
-        <span class="r-go">&#8599;</span></button>`;
+        <span class="r-go">&#8599;&#xFE0E;</span></button>`;
     });
     $("#list").innerHTML = html;
     $("#count").textContent = sel.length === LAVORI.length
@@ -865,8 +893,9 @@ const veil = $("#veil");
 function anima(){
   requestAnimationFrame(anima);
   const p = scrollY / Math.max(1, document.body.scrollHeight - innerHeight);
-  veil.style.opacity = clamp((scrollY - innerHeight)/(innerHeight*.8), 0, 1) * .82;
-  if(ok3d){
+  const velo = clamp((scrollY - innerHeight)/(innerHeight*.7), 0, 1) * .94;
+  veil.style.opacity = velo;
+  if(ok3d && velo < .93){          /* sotto al velo non serve continuare a disegnare */
     const t = (performance.now() - avvio)/1000;
     giroM = p*Math.PI*2 + t*.13;            /* scorrimento + giro lento continuo */
     giroO += (giroM - giroO)*.07;
@@ -940,6 +969,15 @@ async function cancella(){
     await dorm(340);
   }
 })();
+
+/* menu del telefono */
+$("#burger").addEventListener("click", () => {
+  const apertoM = document.body.classList.toggle("menu-on");
+  document.body.style.overflow = apertoM ? "hidden" : "";
+});
+$("#menuM").addEventListener("click", e => {
+  if(e.target.tagName === "A"){ document.body.classList.remove("menu-on"); document.body.style.overflow = ""; }
+});
 
 const cur = $("#cur");
 if(cur){
