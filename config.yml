@@ -1,0 +1,96 @@
+# ============================================================
+# PANNELLO MORELIFE STUDIO
+# Unica riga da cambiare: quella con TUOUTENTE/TUOREPO.
+# ============================================================
+
+backend:
+  name: github
+  repo: TUOUTENTE/TUOREPO
+  branch: main
+
+media_folder: "img/lavori"
+public_folder: "img/lavori"
+
+locale: it
+
+collections:
+  - name: contenuti
+    label: Contenuti
+    files:
+
+      - name: lavori
+        label: Lavori
+        file: lavori.json
+        format: json
+        description: "Ogni voce è un lavoro. L'ordine nell'archivio lo decide la data, non la posizione in questa lista."
+        fields:
+          - name: lavori
+            label: Lavori
+            label_singular: Lavoro
+            widget: list
+            summary: "{{fields.artista}} — {{fields.titolo}} ({{fields.data}})"
+            fields:
+              - { name: artista, label: "Artista o cliente", widget: string }
+              - { name: titolo, label: "Titolo del lavoro", widget: string }
+              - name: tipo
+                label: "Categoria"
+                widget: select
+                options: ["Video", "ADV", "Foto", "Live"]
+                default: "Video"
+              - name: data
+                label: "Mese di uscita"
+                widget: string
+                pattern: ['^\d{4}-\d{2}$', "Scrivi anno-mese, per esempio 2026-06"]
+                hint: "Formato 2026-06. Decide l'anno nell'archivio e se il lavoro entra tra quelli in evidenza (ultimi 24 mesi)."
+              - name: fmt
+                label: "Formato"
+                widget: select
+                options: ["16:9", "9:16", "4:5", "4:3", "1:1"]
+                default: "16:9"
+                hint: "16:9 video orizzontale · 9:16 reel verticale · 4:5 foto social · 1:1 quadrato"
+              - { name: ruolo, label: "Cosa avete fatto", widget: string, hint: "Es. Regia, DOP, montaggio" }
+              - name: yt
+                label: "Codice YouTube"
+                widget: string
+                required: false
+                hint: "Solo il codice dopo v= nel link. Funziona anche se il video è sul canale del cliente."
+              - name: mp4
+                label: "Oppure carica il video"
+                widget: file
+                required: false
+                media_folder: "/video"
+                public_folder: "video"
+                hint: "Solo file leggeri, sotto i 15 MB. Per i video lunghi usa YouTube."
+              - name: clip
+                label: "Anteprima muta (facoltativa)"
+                widget: file
+                required: false
+                media_folder: "/video"
+                public_folder: "video"
+                hint: "Clip di 5-10 secondi senza audio, usata come anteprima nei riquadri in evidenza."
+              - name: foto
+                label: "Foto"
+                widget: list
+                required: false
+                field: { name: image, label: Foto, widget: image }
+                hint: "Trascina qui più foto: diventano una galleria. La prima fa da copertina."
+
+      - name: loghi
+        label: "Loghi clienti"
+        file: loghi.json
+        format: json
+        description: "I clienti compaiono da soli dai lavori. Qui associ il logo a chi ce l'ha."
+        fields:
+          - name: loghi
+            label: Loghi
+            label_singular: Logo
+            widget: list
+            summary: "{{fields.nome}}"
+            fields:
+              - { name: nome, label: "Nome (identico a quello scritto nei lavori)", widget: string }
+              - name: logo
+                label: "File del logo"
+                widget: image
+                media_folder: "/img/clienti"
+                public_folder: "img/clienti"
+                hint: "PNG o SVG con sfondo trasparente, meglio se bianco."

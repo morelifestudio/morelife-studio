@@ -1,0 +1,43 @@
+{
+  "lavori": [
+    {
+      "artista": "Kaimé",
+      "titolo": "Notte Fonda",
+      "tipo": "Video",
+      "data": "2026-06",
+      "fmt": "16:9",
+      "ruolo": "Regia, produzione, post",
+      "yt": "XXXXXXXXXXX",
+      "foto": []
+    },
+    {
+      "artista": "Vera Nott",
+      "titolo": "Rovine",
+      "tipo": "ADV",
+      "data": "2026-04",
+      "fmt": "9:16",
+      "ruolo": "Direzione creativa, campagna",
+      "yt": "XXXXXXXXXXX",
+      "foto": []
+    },
+    {
+      "artista": "Santòra",
+      "titolo": "Estate Tour",
+      "tipo": "Live",
+      "data": "2026-06",
+      "fmt": "16:9",
+      "ruolo": "Aftermovie",
+      "yt": "XXXXXXXXXXX",
+      "foto": []
+    },
+    {
+      "artista": "Duemila",
+      "titolo": "Press kit",
+      "tipo": "Foto",
+      "data": "2026-02",
+      "fmt": "4:5",
+      "ruolo": "Shooting press",
+      "foto": ["img/lavori/duemila-01.jpg", "img/lavori/duemila-02.jpg"]
+    }
+  ]
+}
