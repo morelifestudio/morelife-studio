@@ -54,8 +54,13 @@ collections:
                 widget: string
                 required: false
                 hint: "Solo il codice dopo v= nel link. Funziona anche se il video è sul canale del cliente."
+              - name: url
+                label: "Link del video (Cloudflare R2)"
+                widget: string
+                required: false
+                hint: "Incolla qui il link che finisce con .mp4. Nessun limite di peso: usa questo per i reel verticali."
               - name: mp4
-                label: "Oppure carica il video"
+                label: "Oppure carica il video qui (max 15 MB)"
                 widget: file
                 required: false
                 media_folder: "/video"

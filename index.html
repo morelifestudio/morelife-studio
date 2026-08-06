@@ -533,6 +533,8 @@ const WA_TESTO = "Ciao Morelife! Vi scrivo dal sito.";
      img  → una foto sola, al posto di foto ("img/lavori/nome.jpg")
      mp4  → video caricato da te ("video/nome.mp4"), al posto di yt.
             Usalo solo per file corti e leggeri (sotto i 15 MB).
+     url  → link diretto a un video ospitato altrove (Cloudflare R2).
+            Nessun limite di peso. Deve finire con .mp4
      fmt  → forma del contenuto. "16:9" video orizzontale, "9:16"
             reel verticale, "4:5" foto social, "4:3" video vecchio
             formato, "1:1" quadrato. Se manca, vale 16:9.
@@ -586,7 +588,9 @@ const dataOk = l => (typeof l.data === "string" && /^\d{4}-\d{2}/.test(l.data)) 
 const anno = l => +dataOk(l).slice(0,4);
 const quando = l => new Date(+dataOk(l).slice(0,4), +dataOk(l).slice(5,7) - 1, 1);
 const forma = l => (l.fmt || "16:9").replace(":","/");
-const eVideo = f => /\.(mp4|webm|mov|m4v)$/i.test(f || "");
+const eVideo = f => /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(f || "");
+/* il video può stare nel sito (mp4) oppure su uno spazio esterno (url) */
+const fileVideo = l => l.url || l.mp4 || null;
 
 const waHref = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(WA_TESTO)}`;
 ["#waFloat","#waLink","#waLink2"].forEach(s => { const e = $(s); if(e) e.href = waHref; });
@@ -652,7 +656,7 @@ const tinte = [["#2A0A14","#48111F"],["#1A0A16","#3A0E1B"],["#241016","#12060C"]
                ["#310D18","#150710"],["#1E0C12","#42131F"],["#160710","#37101B"]];
 const ph = i => {const [a,b] = tinte[i%tinte.length];
   return `<div class="ph" style="background:linear-gradient(${125+i*11}deg,${a},${b})"></div>`};
-const copertina = l => (l.foto && l.foto[0]) || l.img || (!eVideo(l.mp4) && l.mp4) || null;
+const copertina = l => (l.foto && l.foto[0]) || l.img || (!eVideo(fileVideo(l)) && fileVideo(l)) || null;
 
   /* YouTube non ha tutte le qualità per tutti i video: le prova in
      sequenza finché ne trova una che esiste davvero. */
@@ -691,7 +695,8 @@ const copertina = l => (l.foto && l.foto[0]) || l.img || (!eVideo(l.mp4) && l.mp
   /* anteprima muta: mp4 se c'è, altrimenti YouTube senza comandi */
 function anteprima(l,i){
   if(!daDesktop) return fermo(l,i);   /* sui telefoni resta l'immagine ferma */
-  const clip = eVideo(l.clip) ? l.clip : (eVideo(l.mp4) ? l.mp4 : null);
+  const v = fileVideo(l);
+  const clip = eVideo(l.clip) ? l.clip : (eVideo(v) ? v : null);
   if(clip) return `${fermo(l,i)}<video data-clip="${clip}" muted loop playsinline preload="none"></video>`;
   if(l.yt)   return `${fermo(l,i)}<iframe data-yt="${l.yt}" title="" allow="autoplay" tabindex="-1"></iframe>`;
   return fermo(l,i);
@@ -915,10 +920,10 @@ function apri(l){
     mostraFoto();
     $("#gpre").onclick = e => { e.stopPropagation(); scorriGal(-1); };
     $("#gsuc").onclick = e => { e.stopPropagation(); scorriGal(1); };
-  } else if(eVideo(l.mp4)){
-    f.innerHTML = `<video src="${l.mp4}" controls autoplay playsinline></video>`;
-  } else if(l.mp4){                       /* un'immagine finita nel campo del video */
-    f.innerHTML = `<img src="${l.mp4}" alt="${l.artista}">`;
+  } else if(eVideo(fileVideo(l))){
+    f.innerHTML = `<video src="${fileVideo(l)}" controls autoplay playsinline></video>`;
+  } else if(fileVideo(l)){                /* un'immagine finita nel campo del video */
+    f.innerHTML = `<img src="${fileVideo(l)}" alt="${l.artista}">`;
   } else if(l.yt){
     f.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${l.yt}?autoplay=1&rel=0" allow="autoplay; fullscreen" allowfullscreen title="${l.artista}"></iframe>`;
   } else {
