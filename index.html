@@ -182,7 +182,8 @@ body.menu-on #menuM{opacity:1;pointer-events:auto}
 .r-thumb{position:relative;overflow:hidden;aspect-ratio:16/9;background:var(--ink-2);opacity:0;transition:opacity .3s .05s}
 .row:hover .r-thumb,.row:focus-visible .r-thumb{opacity:1}
 .r-thumb .ph{position:absolute;inset:0}
-.r-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s}
+.r-thumb img,.r-thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s}
+.r-thumb video.ok{opacity:1}
 .r-thumb img.ok{opacity:1}
 .r-tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .r-go{font-size:16px;color:var(--muted);text-align:right;transition:transform .28s,color .28s}
@@ -681,23 +682,21 @@ const copertina = l => (l.foto && l.foto[0]) || l.img || (!eVideo(fileVideo(l)) 
 
   const fermo = (l,i) => {
     const c = copertina(l);
-    return ph(i) + (c
-      ? `<img src="${c}" alt="" loading="lazy" onload="this.classList.add('ok')">`
-      : imgYt(l.yt));
+    if(c) return ph(i) + `<img src="${c}" alt="" loading="lazy" onload="this.classList.add('ok')">`;
+    return ph(i) + (l.yt ? imgYt(l.yt) : "");
   };
   const mini = (l,i) => {
     const c = copertina(l);
-    return ph(i) + (c
-      ? `<img src="${c}" alt="" loading="lazy" decoding="async" onload="this.classList.add('ok')">`
-      : imgYt(l.yt));
+    if(c) return ph(i) + `<img src="${c}" alt="" loading="lazy" decoding="async" onload="this.classList.add('ok')">`;
+    return ph(i) + (l.yt ? imgYt(l.yt) : "");
   };
 
   /* anteprima muta: mp4 se c'è, altrimenti YouTube senza comandi */
 function anteprima(l,i){
-  if(!daDesktop) return fermo(l,i);   /* sui telefoni resta l'immagine ferma */
+  /* parte anche sui telefoni: l'osservatore accende solo il riquadro visibile */
   const v = fileVideo(l);
   const clip = eVideo(l.clip) ? l.clip : (eVideo(v) ? v : null);
-  if(clip) return `${fermo(l,i)}<video data-clip="${clip}" muted loop playsinline preload="none"></video>`;
+  if(clip) return `${fermo(l,i)}<video data-clip="${clip}" muted loop playsinline preload="metadata"></video>`;
   if(l.yt)   return `${fermo(l,i)}<iframe data-yt="${l.yt}" title="" allow="autoplay" tabindex="-1"></iframe>`;
   return fermo(l,i);
 }
@@ -762,8 +761,20 @@ function avvia(){
   const occhio = new IntersectionObserver(es => es.forEach(e => {
     const v = e.target;
     if(e.isIntersecting){
-      if(v.dataset.clip && !v.src){ v.src = v.dataset.clip; v.play().catch(()=>{}); v.classList.add("ok"); }
-      else if(v.dataset.clip){ v.play().catch(()=>{}); }
+      if(v.dataset.clip && !v.src){
+        v.muted = true;                       /* iOS rifiuta l'avvio se non è muto */
+        v.playsInline = true;
+        v.src = v.dataset.clip;
+        v.load();
+        /* si riproduce solo quando il file è pronto: dare l'ordine prima
+           fallisce in silenzio sulle connessioni lente */
+        v.addEventListener("loadeddata", () => {
+          v.classList.add("ok");
+          v.play().catch(() => v.classList.add("ok"));
+        }, {once:true});
+        v.addEventListener("error", () => console.warn("Video non leggibile:", v.src), {once:true});
+      }
+      else if(v.dataset.clip){ v.muted = true; v.play().catch(()=>{}); }
       if(v.dataset.yt && !v.src){
         const id = v.dataset.yt;
         v.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&modestbranding=1&disablekb=1&playsinline=1&rel=0`;
@@ -773,7 +784,7 @@ function avvia(){
       if(v.dataset.clip) v.pause();
       if(v.dataset.yt && v.src){ v.classList.remove("ok"); v.removeAttribute("src"); }
     }
-  }), {threshold:.35});
+  }), {threshold: matchMedia("(min-width:861px)").matches ? .35 : .6});
   document.querySelectorAll(".shot video,.shot iframe").forEach(v => occhio.observe(v));
 
   /* ---------- archivio ----------
@@ -828,7 +839,8 @@ function avvia(){
         <span class="r-num">${String(n).padStart(2,"0")}</span>
         <span class="r-artist">${l.artista}</span>
         <span class="r-title">${l.titolo}</span>
-        <span class="r-thumb">${mini(l,n)}</span>
+        <span class="r-thumb">${mini(l,n)}${(!copertina(l) && !l.yt && eVideo(fileVideo(l)))
+        ? `<video src="${fileVideo(l)}#t=0.5" muted playsinline preload="metadata" class="ok"></video>` : ""}</span>
         <span class="r-tag">${l.tipo}</span>
         <span class="r-go">&#8599;&#xFE0E;</span></button>`;
     });
