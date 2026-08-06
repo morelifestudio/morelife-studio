@@ -651,16 +651,42 @@ const tinte = [["#2A0A14","#48111F"],["#1A0A16","#3A0E1B"],["#241016","#12060C"]
 const ph = i => {const [a,b] = tinte[i%tinte.length];
   return `<div class="ph" style="background:linear-gradient(${125+i*11}deg,${a},${b})"></div>`};
 const copertina = l => (l.foto && l.foto[0]) || l.img || (!eVideo(l.mp4) && l.mp4) || null;
-const fermo = (l,i) => {
-  const c = copertina(l);
-  return ph(i) + (c
-    ? `<img src="${c}" alt="" loading="lazy" onload="this.classList.add('ok')">`
-    : `<img src="https://i.ytimg.com/vi/${l.yt}/maxresdefault.jpg" alt="" loading="lazy"
-         onload="if(this.naturalWidth>150){this.classList.add('ok')}
-                 else if(!this.dataset.b){this.dataset.b=1;this.src='https://i.ytimg.com/vi/${l.yt}/hqdefault.jpg'}">`);
-};
 
-/* anteprima muta: mp4 se c'è, altrimenti YouTube senza comandi */
+  /* YouTube non ha tutte le qualità per tutti i video: le prova in
+     sequenza finché ne trova una che esiste davvero. */
+  const QUALITA = ["maxresdefault","sddefault","hqdefault","mqdefault"];
+  const imgYt = id => `<img class="yt" data-yt="${id}" data-s="0" alt="" decoding="async">`;
+  function accendiMiniature(dove){
+    (dove || document).querySelectorAll("img.yt:not([data-avviata])").forEach(im => {
+      im.dataset.avviata = 1;
+      const prova = () => {
+        const s = +im.dataset.s;
+        if(s >= QUALITA.length) return;
+        im.src = "https://i.ytimg.com/vi/" + im.dataset.yt + "/" + QUALITA[s] + ".jpg";
+      };
+      const avanti = () => { im.dataset.s = +im.dataset.s + 1; prova(); };
+      im.addEventListener("load", () => {
+        if(im.naturalWidth > 150) im.classList.add("ok"); else avanti();
+      });
+      im.addEventListener("error", avanti);
+      prova();
+    });
+  }
+
+  const fermo = (l,i) => {
+    const c = copertina(l);
+    return ph(i) + (c
+      ? `<img src="${c}" alt="" loading="lazy" onload="this.classList.add('ok')">`
+      : imgYt(l.yt));
+  };
+  const mini = (l,i) => {
+    const c = copertina(l);
+    return ph(i) + (c
+      ? `<img src="${c}" alt="" loading="lazy" decoding="async" onload="this.classList.add('ok')">`
+      : imgYt(l.yt));
+  };
+
+  /* anteprima muta: mp4 se c'è, altrimenti YouTube senza comandi */
 function anteprima(l,i){
   if(!daDesktop) return fermo(l,i);   /* sui telefoni resta l'immagine ferma */
   const clip = eVideo(l.clip) ? l.clip : (eVideo(l.mp4) ? l.mp4 : null);
@@ -710,6 +736,7 @@ function avvia(){
         <span class="no">${String(i+1).padStart(2,"0")}</span>
       </div>
     </button>`).join("");
+  accendiMiniature($("#evid"));
   $("#evidNote").textContent = pochi ? "I lavori più recenti" : "Selezione dagli ultimi due anni, cambia a ogni visita";
 
   /* le anteprime partono solo quando entrano nello schermo, e si
@@ -758,12 +785,6 @@ function avvia(){
   });
   $("#altri").addEventListener("click", () => { mostrati += BLOCCO; render(); });
 
-  /* miniatura piccola: nella lista basta, e pesa un decimo */
-  function mini(l,i){
-    const src = copertina(l) || ("https://i.ytimg.com/vi/" + l.yt + "/hqdefault.jpg");
-    return ph(i) + '<img src="' + src + '" alt="" loading="lazy" decoding="async"'
-         + ' onload="if(this.naturalWidth>60)this.classList.add(\'ok\')">';
-  }
   function filtra(){
     return LAVORI.filter(l =>
       (attivo === "Tutti" || l.tipo === attivo) &&
@@ -795,6 +816,7 @@ function avvia(){
       : `${sel.length} risultati su ${LAVORI.length}`;
     alt.hidden = sel.length <= mostrati;
     alt.textContent = `Mostra altri ${Math.min(BLOCCO, sel.length - mostrati)}`;
+    accendiMiniature($("#list"));
   }
   render();
 
