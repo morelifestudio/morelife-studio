@@ -557,6 +557,45 @@
       "mp4": "",
       "clip": "",
       "foto": []
+    },
+    {
+      "artista": "Luche",
+      "titolo": "Live at Stadio Maradona - Napoli",
+      "tipo": "Live",
+      "data": "2025-06",
+      "fmt": "9:16",
+      "ruolo": "Digital Flyer, Video After, Photo",
+      "yt": "",
+      "url": "https://pub-16a4dd962613450ab818e2f0ae7521be.r2.dev/luche-napoli-aftermovie.mov",
+      "mp4": "",
+      "clip": "",
+      "foto": []
+    },
+    {
+      "artista": "KASH PAGE",
+      "titolo": "Live at Stadio Maradona - Napoli",
+      "tipo": "Live",
+      "data": "2025-06",
+      "fmt": "9:16",
+      "ruolo": "Digital Flyer, Video After, Photo",
+      "yt": "",
+      "url": "https://pub-16a4dd962613450ab818e2f0ae7521be.r2.dev/kashpage-napoli-aftermovie.MP4",
+      "mp4": "",
+      "clip": "",
+      "foto": []
+    },
+    {
+      "artista": "SLF",
+      "titolo": "Live at Palapartenope - Napoli",
+      "tipo": "Video",
+      "data": "2025-04",
+      "fmt": "4:5",
+      "ruolo": "Video After, Photo, Stage Design, VFX & Ledwall",
+      "yt": "",
+      "url": "https://pub-16a4dd962613450ab818e2f0ae7521be.r2.dev/slf-after-palapartenope.mp4",
+      "mp4": "",
+      "clip": "",
+      "foto": []
     }
   ]
 }
