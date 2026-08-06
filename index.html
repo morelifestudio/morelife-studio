@@ -774,7 +774,7 @@ function avvia(){
   /* ---------- archivio ----------
      Regge anche centinaia di lavori: filtri per tipo e anno, ricerca sul
      nome, e la lista cresce a blocchi invece di stampare tutto insieme. */
-  const BLOCCO = 40;
+  const BLOCCO = 12;
   const tipi = ["Tutti", ...new Set(LAVORI.map(l => l.tipo))];
   const anni = ["Tutti", ...[...new Set(LAVORI.map(anno))].sort((x,y) => y-x)];
   let attivo = "Tutti", annoSel = "Tutti", cerca = "", mostrati = BLOCCO;
@@ -796,7 +796,11 @@ function avvia(){
   $("#cerca").addEventListener("input", e => {
     cerca = e.target.value.trim().toLowerCase(); mostrati = BLOCCO; render();
   });
-  $("#altri").addEventListener("click", () => { mostrati += BLOCCO; render(); });
+  $("#altri").addEventListener("click", () => {
+    const y = window.scrollY;
+    mostrati += BLOCCO; render();
+    window.scrollTo(0, y);      /* resta dove sei, non salta */
+  });
 
   function filtra(){
     return LAVORI.filter(l =>
