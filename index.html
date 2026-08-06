@@ -696,7 +696,7 @@ function anteprima(l,i){
   /* parte anche sui telefoni: l'osservatore accende solo il riquadro visibile */
   const v = fileVideo(l);
   const clip = eVideo(l.clip) ? l.clip : (eVideo(v) ? v : null);
-  if(clip) return `${fermo(l,i)}<video data-clip="${clip}" muted loop playsinline preload="metadata"></video>`;
+  if(clip) return `${fermo(l,i)}<video data-clip="${clip}" muted loop playsinline autoplay preload="metadata"></video>`;
   if(l.yt)   return `${fermo(l,i)}<iframe data-yt="${l.yt}" title="" allow="autoplay" tabindex="-1"></iframe>`;
   return fermo(l,i);
 }
@@ -735,10 +735,16 @@ function avvia(){
   const soglia = new Date(oggi.getFullYear()-2, oggi.getMonth(), 1);
   const mischia = a => { a = a.slice();
     for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+  /* i riquadri in evidenza esistono per mostrare il movimento: hanno la
+     precedenza i lavori con un video, le foto riempiono solo se avanzano posti */
+  const conVideo = l => !!(l.url || l.mp4 || l.clip || l.yt);
   let recenti = LAVORI.filter(l => quando(l) >= soglia);
   const pochi = recenti.length < 4;
-  if(pochi) recenti = LAVORI.slice().sort((a,b) => quando(b)-quando(a)).slice(0,8);
-  const scelti = mischia(recenti).slice(0,4);
+  if(pochi) recenti = LAVORI.slice().sort((a,b) => quando(b) - quando(a)).slice(0,12);
+  const scelti = [
+    ...mischia(recenti.filter(conVideo)),
+    ...mischia(recenti.filter(l => !conVideo(l)))
+  ].slice(0,4);
 
   const suono = `<span class="snd"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4m11.5 3a3.5 3.5 0 0 0-2-3.2v6.4a3.5 3.5 0 0 0 2-3.2M13.5 4.3v2.1c2.9.9 5 3.5 5 6.6s-2.1 5.7-5 6.6v2.1c4-1 7-4.5 7-8.7s-3-7.7-7-8.7Z"/></svg></span>`;
   $("#evid").innerHTML = scelti.map((l,i) => `
@@ -762,17 +768,17 @@ function avvia(){
     const v = e.target;
     if(e.isIntersecting){
       if(v.dataset.clip && !v.src){
-        v.muted = true;                       /* iOS rifiuta l'avvio se non è muto */
-        v.playsInline = true;
+        /* iOS non scarica nulla finché non riceve l'ordine di riprodurre:
+           quindi si ordina subito e si riprova a ogni segnale utile. */
+        v.muted = true; v.defaultMuted = true; v.playsInline = true;
+        v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("autoplay", "");
+        v.preload = "auto";
+        v.classList.add("ok");        /* un video invisibile viene bloccato da Safari */
         v.src = v.dataset.clip;
-        v.load();
-        /* si riproduce solo quando il file è pronto: dare l'ordine prima
-           fallisce in silenzio sulle connessioni lente */
-        v.addEventListener("loadeddata", () => {
-          v.classList.add("ok");
-          v.play().catch(() => v.classList.add("ok"));
-        }, {once:true});
-        v.addEventListener("error", () => console.warn("Video non leggibile:", v.src), {once:true});
+        const vai = () => v.play().catch(() => {});
+        vai();
+        ["loadedmetadata","canplay","canplaythrough"].forEach(ev => v.addEventListener(ev, vai));
+        v.addEventListener("error", () => console.warn("Video non leggibile:", v.currentSrc), {once:true});
       }
       else if(v.dataset.clip){ v.muted = true; v.play().catch(()=>{}); }
       if(v.dataset.yt && !v.src){
@@ -786,6 +792,17 @@ function avvia(){
     }
   }), {threshold: matchMedia("(min-width:861px)").matches ? .35 : .6});
   document.querySelectorAll(".shot video,.shot iframe").forEach(v => occhio.observe(v));
+
+  /* iOS con risparmio energetico o dati ridotti rifiuta la riproduzione
+     automatica, ma accetta sempre quella che segue un gesto: al primo
+     tocco sullo schermo — anche solo per scorrere — i video partono. */
+  function sblocca(){
+    document.querySelectorAll(".shot video").forEach(v => {
+      if(v.src && v.paused){ v.muted = true; v.play().catch(() => {}); }
+    });
+  }
+  ["touchstart","pointerdown","click","scroll"].forEach(ev =>
+    addEventListener(ev, sblocca, {passive:true}));
 
   /* ---------- archivio ----------
      Regge anche centinaia di lavori: filtri per tipo e anno, ricerca sul
