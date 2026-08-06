@@ -5,7 +5,7 @@
 
 backend:
   name: github
-  repo: morelifestudio/morelife-studio
+  repo: TUOUTENTE/TUOREPO
   branch: main
 
 media_folder: "img/lavori"
@@ -79,7 +79,7 @@ collections:
         label: "Loghi clienti"
         file: loghi.json
         format: json
-        description: "I clienti compaiono da soli dai lavori. Qui associ il logo a chi ce l'ha."
+        description: "L'elenco delle aziende, etichette e brand con cui avete lavorato. Compare nella striscia scorrevole del sito."
         fields:
           - name: loghi
             label: Loghi
@@ -87,10 +87,11 @@ collections:
             widget: list
             summary: "{{fields.nome}}"
             fields:
-              - { name: nome, label: "Nome (identico a quello scritto nei lavori)", widget: string }
+              - { name: nome, label: "Nome azienda", widget: string, hint: "Compare scritto se non carichi il logo." }
               - name: logo
                 label: "File del logo"
                 widget: image
+                required: false
                 media_folder: "/img/clienti"
                 public_folder: "img/clienti"
                 hint: "PNG o SVG con sfondo trasparente, meglio se bianco."
