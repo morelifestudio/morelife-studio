@@ -581,8 +581,9 @@ const $ = s => document.querySelector(s);
 const clamp = (v,a,b) => Math.min(b,Math.max(a,v));
 const ridotto = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const daDesktop = matchMedia("(min-width:861px)").matches;
-const anno = l => +l.data.slice(0,4);
-const quando = l => new Date(+l.data.slice(0,4), +l.data.slice(5,7)-1, 1);
+const dataOk = l => (typeof l.data === "string" && /^\d{4}-\d{2}/.test(l.data)) ? l.data : "2000-01";
+const anno = l => +dataOk(l).slice(0,4);
+const quando = l => new Date(+dataOk(l).slice(0,4), +dataOk(l).slice(5,7) - 1, 1);
 const forma = l => (l.fmt || "16:9").replace(":","/");
 const eVideo = f => /\.(mp4|webm|mov|m4v)$/i.test(f || "");
 
@@ -707,12 +708,20 @@ async function leggi(nome){
 }
 (async function(){
   const d = await leggi("lavori.json");
-  if(d && d.lavori && d.lavori.length) LAVORI = d.lavori.map(l => ({
-    ...l, foto: (l.foto || []).filter(Boolean)
-  }));
+  if(d && d.lavori && d.lavori.length) LAVORI = d.lavori
+    .filter(l => l && l.artista)
+    .map(l => ({
+      ...l,
+      titolo: l.titolo || "",
+      tipo:   l.tipo || "Video",
+      ruolo:  l.ruolo || "",
+      fmt:    l.fmt || "16:9",
+      foto:   (l.foto || []).filter(Boolean)
+    }));
   const g = await leggi("loghi.json");
   if(g && g.loghi) CLIENTI = g.loghi.filter(x => x && x.nome);
-  avvia();
+  try{ avvia(); }
+  catch(e){ console.error("Errore nel disegnare i contenuti:", e); }
 })();
 
 function avvia(){
@@ -737,6 +746,9 @@ function avvia(){
       </div>
     </button>`).join("");
   accendiMiniature($("#evid"));
+  /* i riquadri nascono invisibili: vanno consegnati all'osservatore che li
+     accende, perché lui è già partito prima che questi esistessero */
+  $("#evid").querySelectorAll(".fade,.mask").forEach(el => io.observe(el));
   $("#evidNote").textContent = pochi ? "I lavori più recenti" : "Selezione dagli ultimi due anni, cambia a ogni visita";
 
   /* le anteprime partono solo quando entrano nello schermo, e si
@@ -974,6 +986,7 @@ const io = new IntersectionObserver(es => es.forEach(e => {
   if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
 }), {threshold:.12, rootMargin:"0px 0px -6% 0px"});
 document.querySelectorAll(".fade,.mask").forEach(el => io.observe(el));
+setTimeout(() => document.querySelectorAll(".ev.fade:not(.in)").forEach(el => el.classList.add("in")), 2500);
 
 
 /* ---------- il titolo che si scrive, in loop ---------- */
