@@ -11,6 +11,30 @@
       "mp4": "",
       "clip": "",
       "foto": []
+    },
+    {
+      "artista": "LEGNO",
+      "titolo": "Titolo Album",
+      "tipo": "ADV",
+      "data": "2019-03",
+      "fmt": "1:1",
+      "ruolo": "Digital Strategy, ADV",
+      "yt": "",
+      "mp4": "",
+      "clip": "/video/ab67616d0000b27330043efe07b5ab51bcee32c7.jpeg",
+      "foto": []
+    },
+    {
+      "artista": "LEGNO",
+      "titolo": "Un Altro Album",
+      "tipo": "Video",
+      "data": "2020-11",
+      "fmt": "1:1",
+      "ruolo": "Digital Strategy, ADV",
+      "yt": "",
+      "mp4": "",
+      "clip": "/video/91XOZ3695aL._UF1000,1000_QL80_.jpg",
+      "foto": []
     }
   ]
 }
