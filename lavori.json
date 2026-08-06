@@ -49,7 +49,21 @@
       "ruolo": "Digital Strategy, ADV",
       "yt": "",
       "mp4": "",
-      "clip": "/video/legno-lato-b.jpg",
+      "clip": "",
+      "foto": [
+        "/img/lavori/legno-lato-b.jpg"
+      ]
+    },
+    {
+      "artista": "CAPO PLAZA",
+      "titolo": "Non Si Ferma",
+      "tipo": "ADV",
+      "data": "2016-11",
+      "fmt": "16:9",
+      "ruolo": "Digital Strategy, ADV",
+      "yt": "VQI8pOQHFE0",
+      "mp4": "",
+      "clip": "",
       "foto": []
     }
   ]
