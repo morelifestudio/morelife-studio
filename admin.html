@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Morelife Studio — Pannello</title>
+<!-- Percorso esatto della configurazione: serve perché Cloudflare
+     toglie il .html dagli indirizzi e il pannello altrimenti
+     cercherebbe il file dentro una cartella /admin che non esiste. -->
+<link href="/config.yml" type="text/yaml" rel="cms-config-url">
 </head>
 <body>
 <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
