@@ -5,7 +5,7 @@
 
 backend:
   name: github
-  repo: TUOUTENTE/TUOREPO
+  repo: morelifestudio/morelife-studio
   branch: main
 
 media_folder: "img/lavori"
