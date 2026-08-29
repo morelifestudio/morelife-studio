@@ -409,7 +409,7 @@
       "data": "2024-07",
       "fmt": "16:9",
       "ruolo": "Direzione Creativa, Digital Cover, Visual Video, ADV, Digital Strategy",
-      "yt": "Direzione Creativa, Digital Cover, Visual Video, ADV, Digital Strategy",
+      "yt": "1r1A4qIQYiI",
       "url": "",
       "mp4": "",
       "clip": "",
@@ -811,16 +811,45 @@
     },
     {
       "artista": "TROPICO",
-      "titolo": "Soli E Disperati Nel Mare Meraviglioso",
+      "titolo": "Soli E Disperati Nel Mare Meraviglioso | Tour",
       "tipo": "Live",
       "data": "2025-12",
       "fmt": "4:3",
-      "ruolo": "Direzione Creativa, Visual Video, ADV, Digital Strategy",
+      "ruolo": "Direzione Creativa, Video, Foto, ADV, Digital Strategy",
       "yt": "",
       "url": "https://pub-16a4dd962613450ab818e2f0ae7521be.r2.dev/tropico-palapartenope-tour.mp4",
       "mp4": "",
       "clip": "",
       "foto": []
+    },
+    {
+      "artista": "CESARE CREMONINI",
+      "titolo": "Soli E Disperati Nel Mare Meraviglioso | Tour",
+      "tipo": "Live",
+      "data": "2025-12",
+      "fmt": "4:3",
+      "ruolo": "Direzione Creativa, Video,",
+      "yt": "",
+      "url": "https://pub-16a4dd962613450ab818e2f0ae7521be.r2.dev/Cremonini-tour%20tropico%20-%20napoli.mp4",
+      "mp4": "",
+      "clip": "",
+      "foto": []
+    },
+    {
+      "artista": "YUNG SNAPP",
+      "titolo": "Hotel Montana (Deluxe Edition) | Album",
+      "tipo": "Foto",
+      "data": "2024-07",
+      "fmt": "16:9",
+      "ruolo": "Direzione Creativa, Digital Cover, Visual Video, ADV, Digital Strategy",
+      "yt": "",
+      "url": "",
+      "mp4": "",
+      "clip": "",
+      "foto": [
+        "/img/lavori/COVER SNAPP.jpg",
+        "/img/lavori/3eafafbc42175acf8137b4784e53f474.1000x1000x1.jpg"
+      ]
     }
   ]
 }
