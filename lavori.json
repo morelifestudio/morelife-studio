@@ -756,6 +756,71 @@
       "mp4": "",
       "clip": "",
       "foto": []
+    },
+    {
+      "artista": "TROPICO",
+      "titolo": "NON ESISTE AMORE A NAPOLI | Album",
+      "tipo": "ADV",
+      "data": "2021-09",
+      "fmt": "16:9",
+      "ruolo": "Digital Strategy, ADV",
+      "yt": "qPnuT6cDpE0",
+      "url": "",
+      "mp4": "",
+      "clip": "",
+      "foto": []
+    },
+    {
+      "artista": "TROPICO",
+      "titolo": "Contrabbando feat. Fabri Fibra & Cesare Cremonini",
+      "tipo": "ADV",
+      "data": "2022-07",
+      "fmt": "16:9",
+      "ruolo": "Digital Strategy, ADV",
+      "yt": "h0ftknQzVLQ",
+      "url": "",
+      "mp4": "",
+      "clip": "",
+      "foto": []
+    },
+    {
+      "artista": "TROPICO",
+      "titolo": "Chiamami Quando La Magia Finisce | Album",
+      "tipo": "ADV",
+      "data": "2023-09",
+      "fmt": "16:9",
+      "ruolo": "Digital Strategy, ADV",
+      "yt": "ngUZBgNTAA4",
+      "url": "",
+      "mp4": "",
+      "clip": "",
+      "foto": []
+    },
+    {
+      "artista": "TROPICO",
+      "titolo": "Soli E Disperati Nel Mare Meraviglioso | Album",
+      "tipo": "ADV",
+      "data": "2025-09",
+      "fmt": "16:9",
+      "ruolo": "Digital Strategy, ADV",
+      "yt": "JXDU1Mwf70o",
+      "url": "",
+      "mp4": "",
+      "clip": "",
+      "foto": []
+    },
+    {
+      "artista": "TROPICO",
+      "titolo": "Soli E Disperati Nel Mare Meraviglioso",
+      "tipo": "Live",
+      "data": "2025-12",
+      "fmt": "4:3",
+      "ruolo": "Direzione Creativa, Visual Video, ADV, Digital Strategy",
+      "yt": "",
+      "url": "https://pub-16a4dd962613450ab818e2f0ae7521be.r2.dev/tropico-palapartenope-tour.mp4",
+      "mp4": "",
+      "clip": "",
+      "foto": []
     }
   ]
 }
