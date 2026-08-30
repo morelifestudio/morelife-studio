@@ -463,8 +463,8 @@ footer a:hover{color:var(--red-hi)}
       <p class="lead fade d1">Scrivici data e budget. Rispondiamo entro 48 ore, anche per dirti di no.</p>
       <div class="direct fade d2">
         <a id="waLink" target="_blank" rel="noopener"><span class="k">WhatsApp</span><span class="v">Scrivici ora</span></a>
-        <a href="mailto:ciao@morelifestudio.it"><span class="k">Email</span><span class="v">ciao@morelifestudio.it</span></a>
-        <a href="https://instagram.com/morelifestudio" target="_blank" rel="noopener"><span class="k">Instagram</span><span class="v">@morelifestudio</span></a>
+        <a href="mailto:ciccio@morelifestudio.it"><span class="k">Email</span><span class="v">ciccio@morelifestudio.it</span></a>
+        <a href="https://instagram.com/morelifecreativestudio" target="_blank" rel="noopener"><span class="k">Instagram</span><span class="v">@morelifecreativestudio</span></a>
       </div>
     </div>
     <!-- Form via Formspree (gratuito): crea il form su formspree.io e incolla qui il tuo endpoint. -->
@@ -518,7 +518,7 @@ footer a:hover{color:var(--red-hi)}
 /* ==================================================================
    CONTATTI
    ================================================================== */
-const WHATSAPP = "393000000000";
+const WHATSAPP = "393760381359";
 const WA_TESTO = "Ciao Morelife! Vi scrivo dal sito.";
 
 /* ==================================================================
@@ -731,16 +731,14 @@ async function leggi(nome){
 
 function avvia(){
   /* ---------- in evidenza: 4 a caso dagli ultimi 24 mesi ---------- */
-  const oggi = new Date();
-  const soglia = new Date(oggi.getFullYear()-2, oggi.getMonth(), 1);
+  /* la vetrina pesca da tutto l'archivio, senza limiti di anno */
   const mischia = a => { a = a.slice();
     for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
   /* i riquadri in evidenza esistono per mostrare il movimento: hanno la
      precedenza i lavori con un video, le foto riempiono solo se avanzano posti */
   const conVideo = l => !!(l.url || l.mp4 || l.clip || l.yt);
-  let recenti = LAVORI.filter(l => quando(l) >= soglia);
-  const pochi = recenti.length < 4;
-  if(pochi) recenti = LAVORI.slice().sort((a,b) => quando(b) - quando(a)).slice(0,12);
+  const recenti = LAVORI.slice();
+  const pochi = false;
   const scelti = [
     ...mischia(recenti.filter(conVideo)),
     ...mischia(recenti.filter(l => !conVideo(l)))
@@ -760,7 +758,7 @@ function avvia(){
   /* i riquadri nascono invisibili: vanno consegnati all'osservatore che li
      accende, perché lui è già partito prima che questi esistessero */
   $("#evid").querySelectorAll(".fade,.mask").forEach(el => io.observe(el));
-  $("#evidNote").textContent = pochi ? "I lavori più recenti" : "Selezione dagli ultimi due anni, cambia a ogni visita";
+  $("#evidNote").textContent = "Una selezione dall" + String.fromCharCode(39) + "archivio, cambia a ogni visita";
 
   /* le anteprime partono solo quando entrano nello schermo, e si
      fermano appena escono: niente quattro video che girano a vuoto */
